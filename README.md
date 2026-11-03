@@ -1,38 +1,34 @@
 # 🛡️ Network Security Assessment & Server Hardening Lab
 
-Este repositório documenta a execução prática de uma auditoria de segurança de rede (*Security Assessment*), captura forense de pacotes e implementação de contramedidas de blindagem de servidor (*Server Hardening*) em ambiente Linux.
+Este repositório documenta a execução prática de uma auditoria de segurança de rede (*Security Assessment*), captura forense de pacotes e implementação de contramedidas de blindagem de servidores (*Server Hardening*) em ambiente GNU/Linux.
 
-O projeto demonstra o ciclo completo de análise de vulnerabilidades da superfície de ataque, coleta de evidências de tráfego e aplicação de políticas restritivas de firewall.
-
----
+O projeto demonstra o ciclo completo de análise da superfície de ataque, coleta de evidências de tráfego em tempo real e aplicação de políticas restritivas de firewall baseadas no princípio *Default-Deny*.
 
 ## 📐 Arquitetura do Laboratório
 
-A topologia foi implantada em ambiente virtualizado, com comunicação direta em camada de rede local.
+A topologia foi implantada em ambiente virtualizado, simulando um cenário real de rede local segmentada.
 
-- **Servidor Alvo (Hardening):** Ubuntu Server
-- **Estação de Auditoria (Atacante):** Windows 10 (Nmap e Wireshark)
-- **Modo de Rede:** Placa em modo Bridged (Bridged Adapter)
-- **Serviço de Gerenciamento:** OpenSSH (porta 22/tcp)
-- **Ferramentas Utilizadas:** Nmap, Tcpdump e UFW (Uncomplicated Firewall)
+- **Servidor Alvo (Hardening):** Ubuntu Server (IP: `192.168.3.150`)
+- **Estação de Auditoria (Atacante):** Windows 10 (Executando Nmap)
+- **Modo de Rede:** Placa em modo *Bridge* (Adaptador em Ponte)
+- **Serviço de Gerenciamento:** OpenSSH (porta `22/tcp`)
+- **Ferramentas Utilizadas:** Nmap, Tcpdump e UFW (*Uncomplicated Firewall*)
 
----
+## 🚀 Fases de Execução
 
-## 🚀 Etapas da Execução
+### 1. Reconhecimento Inicial e Captura Forense de Tráfego
 
-### 1. Levantamento Inicial e Captura Forense
+Antes de aplicar qualquer regra de defesa, iniciou-se a escuta passiva na interface de rede do servidor para registrar o tráfego de varredura.
 
-Antes de aplicar qualquer regra de defesa, foi iniciada a escuta da interface de rede no servidor Linux para geração de evidências forenses.
-
-**Captura de tráfego com Tcpdump:**
+**Iniciação da captura com o Tcpdump:**
 
 ```
 sudo tcpdump -i enp0s3 -w evidencia_scan.pcapng
 ```
 
-A partir da máquina Windows 10, executou-se uma varredura completa, cobrindo o espectro total de portas TCP (`-p-`), identificação de versões dos serviços (`-sV`) e execução de scripts de enumeração padrão (`-sC`).
+A partir da estação Windows, conduziu-se um escaneamento completo, mapeando todas as portas TCP (`-p-`), identificando versões de serviços (`-sV`) e executando scripts de enumeração (`-sC`).
 
-**Varredura com Nmap:**
+**Execução da varredura com o Nmap:**
 
 ```
 nmap -sV -sC -p- 192.168.3.150
@@ -40,78 +36,61 @@ nmap -sV -sC -p- 192.168.3.150
 
 ### 2. Implementação do Server Hardening (UFW)
 
-Para mitigar a exposição de serviços e vetores de ataque não autorizados no Ubuntu Server, aplicou-se uma política restritiva de *Default-Deny* utilizando o firewall nativo UFW.
+Para mitigar vetores de ataque e fechar portas desnecessárias, configurou-se o firewall nativo do Ubuntu Server sob uma diretriz estrita de segurança.
 
-**2.1. Definição das políticas padrão:**
+#### 2.1. Definição das políticas padrão (*Default-Deny*)
 
 ```
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
 ```
 
-**2.2. Liberação estrita do serviço essencial (SSH):**
+#### 2.2. Abertura seletiva do canal de administração (SSH)
 
 ```
 sudo ufw allow 22/tcp
 ```
 
-**2.3. Ativação e verificação do firewall:**
+#### 2.3. Ativação do Firewall e Auditoria de Estado
 
 ```
 sudo ufw enable
 sudo ufw status verbose
 ```
 
----
+## 📊 Validação e Resultados
 
-## 📊 Resultados e Validação
+Após a aplicação das diretrizes de blindagem, o perfil de exposição do servidor reduziu-se drasticamente:
 
-Após a aplicação do hardening, uma nova varredura Nmap foi realizada a partir da máquina auditora.
+- **Portas filtradas / ocultadas:** 65.534 portas TCP sem resposta.
+- **Superfície de ataque ativa:** Exclusivamente a porta `22/tcp` (OpenSSH), mantendo o gerenciamento remoto operacional.
 
-O resultado demonstrou a eficácia das regras de firewall na redução da superfície de ataque:
-
-- **Portas filtradas pelo firewall:** 65.534 portas TCP sem resposta que permitisse confirmar sua disponibilidade.
-- **Superfície exposta permitida:** Apenas a porta 22/tcp (OpenSSH) permaneceu acessível para administração remota.
-
-**Resultado da varredura após o hardening:**
-
-```
-PORT   STATE SERVICE VERSION
-22/tcp open  ssh     OpenSSH 10.2p1 Ubuntu
-```
-
----
-
-## 📂 Estrutura de Arquivos e Evidências
+## 📂 Estrutura do Repositório e Evidências
 
 ```
 ubuntu-server-hardening-lab/
 │
-├── README.md
-│
 ├── assets/
-│   ├── scan-inicial-nmap.png
-│   └── scan-pos-hardening.png
+│   └── screenshots/
+│       ├── nmap_scan.png
+│       ├── ufw_config.png
+│       └── ufw_status.png
 │
-└── captures/
-    └── evidencia_scan.pcapng
+├── captures/
+│   └── evidencia_scan.pcapng   # Gerido via Git LFS (~905 MB)
+│
+└── README.md
 ```
 
-### Descrição das Evidências
+### Descrição dos Recursos
 
-- `assets/scan-inicial-nmap.png`: Captura de tela da varredura inicial, demonstrando a superfície de ataque antes da aplicação das regras de firewall.
-- `assets/scan-pos-hardening.png`: Captura de tela da varredura posterior, demonstrando a redução da exposição dos serviços após o hardening.
-- `captures/evidencia_scan.pcapng`: Arquivo contendo o registro bruto do tráfego de rede capturado durante as varreduras ativas, permitindo análise posterior no Wireshark.
+- **`assets/screenshots/`:** Contém os registros visuais do terminal e das ferramentas de escaneamento.
+- **`captures/evidencia_scan.pcapng`:** Arquivo bruto contendo o registro de mais de 130 mil pacotes capturados pelo Tcpdump, permitindo inspeção detalhada no Wireshark.
 
----
+## 🎯 Competências Demonstradas
 
-## 🎯 Objetivo do Projeto
-
-Demonstrar, na prática, conhecimentos fundamentais de:
-
-- Auditoria e avaliação de segurança de redes.
-- Identificação e enumeração de serviços com Nmap.
-- Captura e análise forense de pacotes com Tcpdump e Wireshark.
-- Configuração e administração de firewall Linux com UFW.
-- Aplicação de políticas de segurança baseadas no princípio *Default-Deny*.
-- Redução da superfície de ataque por meio de Server Hardening.
+- Auditoria e avaliação de segurança de redes locais.
+- Enumeração de serviços e detecção de portas com o Nmap.
+- Captura forense de pacotes com o Tcpdump.
+- Administração de firewalls baseados em iptables/UFW em sistemas Linux.
+- Implementação prática do princípio do menor privilégio (*Least Privilege*) e *Server Hardening*.
