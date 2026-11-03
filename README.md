@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-Claro! Organizei todo o conteúdo em um único bloco Markdown, corrigindo a formatação, a hierarquia dos títulos, os comandos e a estrutura de diretórios. Mantive as informações técnicas originais para que você possa copiar diretamente para o arquivo `README.md` do GitHub.
-
 # 🛡️ Network Security Assessment & Server Hardening Lab
 
 Este repositório documenta a execução prática de uma auditoria de segurança de rede (*Security Assessment*), captura forense de pacotes e implementação de contramedidas de blindagem de servidor (*Server Hardening*) em ambiente Linux.
