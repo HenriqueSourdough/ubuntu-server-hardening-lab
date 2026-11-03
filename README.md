@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Claro! Organizei todo o conteúdo em um único bloco Markdown, corrigindo a formatação, a hierarquia dos títulos, os comandos e a estrutura de diretórios. Mantive as informações técnicas originais para que você possa copiar diretamente para o arquivo `README.md` do GitHub.
 
 # 🛡️ Network Security Assessment & Server Hardening Lab
@@ -123,3 +124,6 @@ Demonstrar, na prática, conhecimentos fundamentais de:
 Uma observação técnica: mantive o resultado informado, mas vale conferir se as 65.534 portas foram efetivamente classificadas como `filtered` pelo Nmap. Ausência de resposta, isoladamente, não comprova que todas foram filtradas pelo firewall.
 
 Também recomendo adicionar futuramente uma seção de Conclusão Técnica, comparando a exposição antes e depois do hardening. Isso valoriza bastante o projeto no portfólio.
+=======
+# ubuntu-server-hardening-lab
+>>>>>>> 10ff265a2e0520262ce3756b79d621c0ae101ff8
